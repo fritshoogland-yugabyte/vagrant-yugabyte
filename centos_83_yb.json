@@ -45,6 +45,8 @@
   ],
   "provisioners": [
     {
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "expect_disconnect": "true",
       "type": "shell", 
       "scripts": [
         "./scripts/centos_83/dns_fix.sh",
@@ -59,8 +61,7 @@
         "./scripts/centos_83_yb/yb_5_software.sh",
         "./scripts/centos_83/cleanup.sh",
         "./scripts/centos_83/zero_diskspace.sh"
-      ],
-      "type": "shell", 
+      ]
     }
   ],
   "post-processors": [
