@@ -1,3 +1,12 @@
+# The contents below were provided by the Packer Vagrant post-processor
+
+Vagrant.configure("2") do |config|
+  config.vm.base_mac = "080027E2A9E0"
+end
+
+
+# The contents below (if any) are custom contents provided by the
+# Packer template during image build.
 # The contents below (if any) are custom contents provided by the
 # Packer template during image build.
 # -*- mode: ruby -*-
@@ -6,39 +15,126 @@
 ########################################
 # variables to control behaviour. variables are set as environment variables and must be exported.
 #
-# number of nodes.
-# internal variable: number_nodes, environment variable: NR.
-# possible values: 1 (default) up number of nodes host can serve. If value is lower than RF, it will be adjusted to RF.
-number_nodes = ENV['NR'] || '1'
-#
-# replication factor.
-# internal variable: replication_factor, environment variable: RF.
-# possible values: 1 (default), 3, 5.
-replication_factor = ENV['RF'] || '1'
-if number_nodes.to_i < replication_factor.to_i
-  number_nodes = replication_factor
+# these are the default variables:
+if !File.exists?('vagrant_settings.json')
+  settings = {}
+  settings['number_nodes'] = '1'
+  settings['replication_factor'] = '1'
+  settings['hostname'] = 'yb'
+  settings['net_address'] = '192.168.66'
+  settings['host_start_address'] = '80'
+  settings['memory_size'] = '1024'
+  settings['nr_cpus'] = '1'
+  settings['add_disk'] = 'yes'
+  settings['disk_size'] = '10240'
+  settings['start_services'] = 'yes'
+else
+  file = File.read('vagrant_settings.json')
+  settings = JSON.parse(file)
 end
 #
-# hostname
-# internal variable: hostname, environment variable: NAME.
-# possible values: see RFC 952 & 1123
-hostname = ENV['NAME'] || 'yb'
+changed_settings = {}
+settings.each do |name, value|
+  # number of nodes.
+  # internal variable: number_nodes, environment variable: NR.
+  # possible values: 1 (default) up to 10. If value is lower than RF, it will be adjusted to RF.
+  if name = 'number_nodes'
+    if ENV.key?('NR')
+      changed_settings[name] = ENV['NR']
+    end
+  end
+  # replication factor.
+  # internal variable: replication_factor, environment variable: RF.
+  # possible values: 1 (default), 3, 5, 7.
+  # number_nodes is adjusted to at least replication_factor is number_nodes is lower.
+  if name = 'replication_factor'
+    if ENV.key?('RF')
+      changed_settings[name] = ENV['RF']
+      if !changed_settings.key?('number_nodes')
+        changed_settings['number_nodes'] = changed_settings['replication_factor']
+      end
+      if changed_settings['number_nodes'].to_i < changed_settings['replication_factor'].to_i
+        change_settings['number_nodes'] = changed_settings['replication_factor']
+      end
+    end
+  end
+  # hostname
+  # internal variable: hostname, environment variable: NAME.
+  # possible values: see RFC 952 & 1123
+  if name = 'hostname'
+    if ENV.key?('NAME')
+      changed_settings[name] = ENV['NAME']
+    end
+  end
+  # private network ip addresses.
+  # it's up to you to make sure the set addresses are valid and do not run out of the allowed ranges!
+  # internal variable: net_address, environment variable: NET_ADDRESS
+  # possible values: (1..255).(1..255).(1..255), default: 192.168.66
+  if name = 'net_address'
+    if ENV.key?('NET_ADDRESS')
+      changed_settings[name] = ENV['NET_ADDRESS']
+    end
+  end
+  # internal variable: host_start_address, environment variable: HOST_ADDRESS
+  # possible values: (1..255), default: 80
+  if name = 'host_start_address'
+    if ENV.key?('HOST_ADDRESS')
+      changed_settings[name] = ENV['HOST_ADDRESS']
+    end
+  end
+  # memory_size.
+  # internal variable: memory_size, environment variable: MEM, possible values: 1024 (default), <integer> indicating MB of memory for each VM.
+  if name = 'memory_size'
+    if ENV.key?('MEM')
+      changed_settings[name] = ENV['MEM']
+    end
+  end
+  # nr_cpus.
+  # internal variable: nr_cpus, environemnt variable: CPUS, possible values: 1 (default), <integer> indicating number of VCPUs for each VM.
+  if name = 'nr_cpus'
+    if ENV.key?('CPUS')
+      changed_settings[name] = ENV['CPUS']
+    end
+  end
+  # add_disk.
+  # internal variable: add_disk, environment variable: ADD_DISK, possible values: yes (default), <anything else> skips creation of a disk for the YB database.
+  if name = 'add_disk'
+    if ENV.key?('ADD_DISK')
+      changed_settings[name] = ENV['ADD_DISK']
+    end
+  end
+  # disk_size
+  # internal variable: disk_size, environment variable: DISK_SIZE, possible values: 10240 (default), <integer> indicating the size of the disk in MB.
+  if name = 'disk_size'
+    if ENV.key?('DISK_SIZE')
+      changed_settings[name] = ENV['DISK_SIZE']
+    end
+  end
+  # start_services
+  # internal variable: start_services, environment variable: START_SERVICES, possible values: yes (default), <anything else> skips enabling autostart and starting up YB services.
+  if name = 'start_services'
+    if ENV.key?('START_SERVICES')
+      changed_settings[name] = ENV['START_SERVICES']
+    end
+  end
+end
+changed_settings.each do |name, value|
+  settings[name] = value
+end
+File.write('vagrant_settings.json', JSON.dump(settings))
 #
-# private network ip addresses.
-# it's up to you to make sure the set addresses are valid and do not run out of the allowed ranges!
-# internal variable: net_address, environment variable: NET_ADDRESS
-# possible values: (1..255).(1..255).(1..255), default: 192.168.66
-net_address = ENV['NET_ADDRESS'] || '192.168.66'
-# internal variable: host_start_address, environment variable: HOST_ADDRESS
-# possible values: (1..255), default: 80
-host_start_address = ENV['HOST_ADDRESS'] || '80'
-#
-# regardless of how many nodes are actually used, let's always prepare a number of ip addresses.
-# this allows you to add a node later on, without the need to manually add it to the hosts file.
-# my macbook runs out of memory with 10 (very small) VMs, so that's the reason for 10.
+# now set the variables into the appropriate variables
+number_nodes =  settings['number_nodes']
+replication_factor =  settings['replication_factor']
+hostname =  settings['hostname']
+net_address = settings['net_address']
+host_start_address = settings['host_start_address']
+memory_size = settings['memory_size']
+nr_cpus = settings['nr_cpus']
+add_disk = settings['add_disk']
+disk_size = settings['disk_size']
+start_services = settings['start_services']
 number_ip_addresses_to_prepare = 10
-#
-# build arrays for the ip addresses, the master addresses and the lines for /etc/hosts.
 ip_address = []
 master_address = []
 etc_hosts_line = []
@@ -52,26 +148,6 @@ for number in 1..number_ip_addresses_to_prepare
     end
   end
 end
-#
-# memory_size.
-# internal variable: memory_size, environment variable: MEM, possible values: 1024 (default), <integer> indicating MB of memory for each VM.
-memory_size = ENV['MEM'] || '1024'
-#
-# nr_cpus.
-# internal variable: nr_cpus, environemnt variable: CPUS, possible values: 1 (default), <integer> indicating number of VCPUs for each VM.
-nr_cpus = ENV['CPUS'] || '1'
-#
-# add_disk.
-# internal variable: add_disk, environment variable: ADD_DISK, possible values: yes (default), <anything else> skips creation of a disk for the YB database.
-add_disk = ENV['ADD_DISK'] || 'yes'
-#
-# disk_size
-# internal variable: disk_size, environment variable: DISK_SIZE, possible values: 10240 (default), <integer> indicating the size of the disk in MB.
-disk_size = ENV['DISK_SIZE'] || '10240'
-#
-# start_services
-# internaal variable: start_services, environment variable: START_SERVICES, possible values: yes (default), <anything else> skips enabling autostart and starting up YB services.
-start_services = ENV['START_SERVICES'] || 'yes'
 
 # partition and format.
 # This is a (console/bash) code block in a variable.
