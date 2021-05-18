@@ -15,8 +15,8 @@ CLIENT=\"\"" > /opt/yugabyte/conf/home.environment
 echo "#!/bin/bash
 source /opt/yugabyte/conf/home.environment
 if [ ! -z \"\$CLIENT\" ]; then
-export CDPATH=\$CLIENT:\$CDPATH
-export PATH=\$CLIENT/bin:\$CLIENT/tools:\$CLIENT/postgres/bin:\$PATH
+export CDPATH=/opt/yugabyte/\$CLIENT:\$CDPATH
+export PATH=/opt/yugabyte/\$CLIENT/bin:/opt/yugabyte/\$CLIENT/tools:/opt/yugabyte/\$CLIENT/postgres/bin:\$PATH
 fi" > /usr/local/bin/yb-env
 chown yugabyte.yugabyte /usr/local/bin/yb-env
 chmod 750 /usr/local/bin/yb-env

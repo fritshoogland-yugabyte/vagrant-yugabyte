@@ -31,3 +31,6 @@ elif getent passwd $YUGABYTE_UID >& /dev/null; then
 else
   useradd -g $YUGABYTE_GID -u $YUGABYTE_UID -m yugabyte
 fi
+
+#
+usermod -a -G yugabyte vagrant
