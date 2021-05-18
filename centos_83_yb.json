@@ -54,11 +54,13 @@
         "./scripts/centos_83/yum_repo_set.sh",
         "./scripts/centos_83/vagrant_insecure_pubkey.sh",
         "./scripts/centos_83/virtualbox_guest_additions.sh",
-        "./scripts/centos_83_yb/yb_1_yum.sh",
-        "./scripts/centos_83_yb/yb_2_user_group.sh",
-        "./scripts/centos_83_yb/yb_3_limits.sh",
-        "./scripts/centos_83_yb/yb_4_tuned.sh",
-        "./scripts/centos_83_yb/yb_5_software.sh",
+        "./scripts/centos_83_yb/1_yum.sh",
+        "./scripts/centos_83_yb/2_user_group.sh",
+        "./scripts/centos_83_yb/3_limits.sh",
+        "./scripts/centos_83_yb/4_tuned.sh",
+        "./scripts/centos_83_yb/5_yugabyte_structure.sh",
+        "./scripts/centos_83_yb/6_yugabyte_install.sh",
+        "./scripts/centos_83_yb/7_yugabyte_systemd.sh",
         "./scripts/centos_83/cleanup.sh",
         "./scripts/centos_83/zero_diskspace.sh"
       ]

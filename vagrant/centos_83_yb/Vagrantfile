@@ -157,9 +157,9 @@ if [ -b /dev/sdb ]; then
   parted /dev/sdb --script -- mklabel gpt
   parted /dev/sdb --script -- mkpart primary 0% 100%
   mkfs.xfs /dev/sdb1
-  echo '/dev/sdb1 /mnt/disk1 xfs noatime,nofail,allocsize=4m 0 0' >> /etc/fstab
-  mount /mnt/disk1
-  chown yb.yb /mnt/disk1
+  echo '/dev/sdb1 /mnt/d0 xfs noatime,nofail,allocsize=4m 0 0' >> /etc/fstab
+  mount /mnt/d0
+  chown yb.yb /mnt/d0
 fi
 MANAGE_DISK
 
@@ -170,7 +170,7 @@ Vagrant.configure("2") do |config|
   end
 
   # all the nodes use an identical image.
-  config.vm.box = "FritsHoogland/centos8-yb-rf3"
+  config.vm.box = "FritsHoogland/centos8-yb"
 
   # we use the same number of nodes as the replication factor.
   # for RF=3, we need 3 yb-master processes, for which we create a VM each.
@@ -191,12 +191,12 @@ Vagrant.configure("2") do |config|
         end
       end
       if vm_nr <= replication_factor.to_i
-        subconfig.vm.provision "master.conf:master_addresses", type: "shell", privileged: true, inline: "sed -i 's/\\(--master_addresses=\\)127.0.0.1:7100/\\1#{master_address.compact.join(',')}/' /home/yb/master.conf"
-        subconfig.vm.provision "master.conf:replication_factor", type: "shell", privileged: true, inline: "sed -i 's/\\(--replication_factor=\\)1/\\1#{replication_factor}/' /home/yb/master.conf"
-        subconfig.vm.provision "master.conf:additional_flag", type: "shell", privileged: true, inline: "echo '--default_memory_limit_to_ram_ratio=1' >> /home/yb/master.conf"
+        subconfig.vm.provision "master.conf:master_addresses", type: "shell", privileged: true, inline: "sed -i 's/\\(--master_addresses=\\)127.0.0.1:7100/\\1#{master_address.compact.join(',')}/' /opt/yugabyte/conf/master.conf"
+        subconfig.vm.provision "master.conf:replication_factor", type: "shell", privileged: true, inline: "sed -i 's/\\(--replication_factor=\\)1/\\1#{replication_factor}/' /opt/yugabyte/conf/master.conf"
+        #subconfig.vm.provision "master.conf:additional_flag", type: "shell", privileged: true, inline: "echo '--default_memory_limit_to_ram_ratio=1' >> /opt/yugabyte/conf/master.conf"
       end
-      subconfig.vm.provision "tserver.conf:tserver_master_addrs", type: "shell", privileged: true, inline: "sed -i 's/\\(--tserver_master_addrs=\\)127.0.0.1:7100/\\1#{master_address.compact.join(',')}/' /home/yb/tserver.conf"
-      subconfig.vm.provision "tserver.conf:additional_flag", type: "shell", privileged: true, inline: "echo '--default_memory_limit_to_ram_ratio=1' >> /home/yb/tserver.conf"
+      subconfig.vm.provision "tserver.conf:tserver_master_addrs", type: "shell", privileged: true, inline: "sed -i 's/\\(--tserver_master_addrs=\\)127.0.0.1:7100/\\1#{master_address.compact.join(',')}/' /opt/yugabyte/conf/tserver.conf"
+      #subconfig.vm.provision "tserver.conf:additional_flag", type: "shell", privileged: true, inline: "echo '--default_memory_limit_to_ram_ratio=1' >> /opt/yugebyate/conf/tserver.conf"
       subconfig.vm.provision "etc_hosts", type: "shell", privileged: true, inline: "printf '#{etc_hosts_line.compact.join('\n')}\n' >> /etc/hosts"
       # provisioning
       # if we find a blockdevice /dev/sdb, a disk is attached.
