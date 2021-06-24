@@ -9,6 +9,7 @@ su -c "echo \"--master_addresses=127.0.0.1:7100
 --placement_cloud=local
 --placement_region=local
 --placement_zone=local
+--default_memory_limit_to_ram_ratio=0.35
 --replication_factor=1\" > /opt/yugabyte/conf/master.conf" yugabyte
 
 echo "create yb-master unit file"
@@ -46,6 +47,9 @@ su -c "echo \"--tserver_master_addrs=127.0.0.1:7100
 --fs_data_dirs=/mnt/d0
 --placement_cloud=local
 --placement_region=local
+--default_memory_limit_to_ram_ratio=0.6
+--client_read_write_timeout_ms=600000
+--pg_yb_session_timeout_ms=600000
 --placement_zone=local\" > /opt/yugabyte/conf/tserver.conf" yugabyte
 
 echo "create yb-tserver unit file"
