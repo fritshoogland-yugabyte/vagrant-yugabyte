@@ -6,4 +6,6 @@
 # centos 8.3 - postgres 11
 #packer build -on-error=ask centos_83_pg_11.json
 # centos 8.3 - yugabyte 
-packer build -on-error=ask centos_83_yb.json
+#packer build -on-error=ask centos_83_yb.json
+# rocky 8.4 - yugabyte
+packer build -on-error=ask rocky_84_yb.json

@@ -1,0 +1,78 @@
+{
+  "builders": [
+    {
+      "boot_command": "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks.cfg<enter><wait>",
+      "boot_wait": "10s",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "RedHat_64",
+      "hard_drive_interface": "sata",
+      "http_directory": "./kickstart/rocky_84/",
+      "iso_checksum": "sha256:ffe2fae67da6702d859cfb0b321561a5d616ce87a963d8a25b018c9c3d52d9a4",
+      "iso_url": "https://download.rockylinux.org/pub/rocky/8/isos/x86_64/Rocky-8.4-x86_64-dvd1.iso",
+      "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
+      "ssh_password": "vagrant",
+      "ssh_timeout": "6000s",
+      "ssh_username": "vagrant",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--usb",
+          "off"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--audio",
+          "none"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ],
+      "vm_name": "rocky_84_yb"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "expect_disconnect": "true",
+      "type": "shell", 
+      "scripts": [
+        "./scripts/rocky_84/dns_fix.sh",
+        "./scripts/rocky_84/sshd.sh",
+        "./scripts/rocky_84/yum_repo_set.sh",
+        "./scripts/rocky_84/vagrant_insecure_pubkey.sh",
+        "./scripts/rocky_84/virtualbox_guest_additions.sh",
+        "./scripts/rocky_84_yb/1_yum.sh",
+        "./scripts/rocky_84_yb/2_user_group.sh",
+        "./scripts/rocky_84_yb/3_limits.sh",
+        "./scripts/rocky_84_yb/4_tuned.sh",
+        "./scripts/rocky_84_yb/5_yugabyte_structure.sh",
+        "./scripts/rocky_84_yb/6_yugabyte_install.sh",
+        "./scripts/rocky_84_yb/7_yugabyte_systemd.sh",
+        "./scripts/rocky_84/cleanup.sh",
+        "./scripts/rocky_84/zero_diskspace.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "output": "./box/rocky_84_yb_{{.Provider}}.box",
+      "type": "vagrant",
+      "vagrantfile_template": "./vagrant/rocky_84_yb/Vagrantfile"
+    }
+  ]
+}
+
