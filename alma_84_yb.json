@@ -1,0 +1,78 @@
+{
+  "builders": [
+    {
+      "boot_command": ["<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks.cfg<enter><wait>"],
+      "boot_wait": "10s",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "RedHat_64",
+      "hard_drive_interface": "sata",
+      "http_directory": "./kickstart/alma_84/",
+      "iso_checksum": "sha256:4dd2f7c558bfa34d9a5e71d5add2c77c59fdec58076678a381d9dfd0f9583a51",
+      "iso_url": "http://almalinux.mirror.liteserver.nl/8.4/isos/x86_64/AlmaLinux-8.4-x86_64-dvd.iso",
+      "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
+      "ssh_timeout": "6000s",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "type": "virtualbox-iso",
+      "headless": "true",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--usb",
+          "off"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--audio",
+          "none"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ],
+      "vm_name": "alma_84_yb"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "expect_disconnect": "true",
+      "type": "shell", 
+      "scripts": [
+        "./scripts/alma_84/dns_fix.sh",
+        "./scripts/alma_84/sshd.sh",
+        "./scripts/alma_84/yum_repo_set.sh",
+        "./scripts/alma_84/virtualbox_guest_additions.sh",
+        "./scripts/alma_84_yb/1_yum.sh",
+        "./scripts/alma_84_yb/2_user_group.sh",
+        "./scripts/alma_84_yb/3_limits.sh",
+        "./scripts/alma_84_yb/4_tuned.sh",
+        "./scripts/alma_84_yb/5_yugabyte_structure.sh",
+        "./scripts/alma_84_yb/6_yugabyte_install.sh",
+        "./scripts/alma_84_yb/7_yugabyte_systemd.sh",
+        "./scripts/alma_84/cleanup.sh",
+        "./scripts/alma_84/zero_diskspace.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "output": "./box/alma_84_yb_{{.Provider}}.box",
+      "type": "vagrant",
+      "vagrantfile_template": "./vagrant/alma_84_yb/Vagrantfile"
+    }
+  ]
+}
+

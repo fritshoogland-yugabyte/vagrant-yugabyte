@@ -7,5 +7,11 @@
 #packer build -on-error=ask centos_83_pg_11.json
 # centos 8.3 - yugabyte 
 #packer build -on-error=ask centos_83_yb.json
+# centos 8.4 - yugabyte 
+#packer build -on-error=ask centos_84_yb.json
 # rocky 8.4 - yugabyte
-packer build -on-error=ask rocky_84_yb.json
+#packer build -on-error=ask rocky_84_yb.json
+# alma 8.4 - yugabyte
+#packer build -on-error=ask alma_84_yb.json
+# alma 8.4 
+packer build -on-error=ask alma_84.json
