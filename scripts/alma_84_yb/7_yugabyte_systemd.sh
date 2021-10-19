@@ -9,8 +9,16 @@ su -c "echo \"--master_addresses=127.0.0.1:7100
 --placement_cloud=local
 --placement_region=local
 --placement_zone=local
---default_memory_limit_to_ram_ratio=0.35
---replication_factor=1\" > /opt/yugabyte/conf/master.conf" yugabyte
+--replication_factor=1
+--default_memory_limit_to_ram_ratio=0.30
+--db_block_cache_size_percentage=10
+--global_memstore_size_percentage=10
+--read_buffer_memory_limit=5000000
+--log_cache_size_limit_mb=16
+--global_log_cache_size_limit_mb=32
+--log_cache_gc_evict_only_over_allocated=false
+--enable_block_based_table_gc=true
+\" > /opt/yugabyte/conf/master.conf" yugabyte
 
 echo "create yb-master unit file"
 echo "[Unit]
@@ -47,10 +55,22 @@ su -c "echo \"--tserver_master_addrs=127.0.0.1:7100
 --fs_data_dirs=/mnt/d0
 --placement_cloud=local
 --placement_region=local
+--placement_zone=local
 --default_memory_limit_to_ram_ratio=0.6
 --client_read_write_timeout_ms=600000
 --pg_yb_session_timeout_ms=600000
---placement_zone=local\" > /opt/yugabyte/conf/tserver.conf" yugabyte
+--db_block_cache_size_percentage=10
+--global_memstore_size_percentage=10
+--read_buffer_memory_limit=5000000
+--log_cache_size_limit_mb=16
+--global_log_cache_size_limit_mb=32
+--log_cache_gc_evict_only_over_allocated=false
+--ysql_num_shards_per_tserver=1
+--yb_num_shards_per_tserver=2
+--raft_heartbeat_interval_ms=1000
+--leader_lease_duration_ms=4000
+--enable_block_based_table_cache_gc=true
+\" > /opt/yugabyte/conf/tserver.conf" yugabyte
 
 echo "create yb-tserver unit file"
 echo "[Unit]
