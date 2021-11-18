@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version ">= 1.8.1"
+Vagrant.configure("2") do |config|
+  config.vm.box = "FritsHoogland/alma_85"
+  #config.vm.box = "file:///Volumes/Samsung_T3/packer/packer-boxes/box/alma_85_virtualbox.box"
+  config.vm.box_check_update = true
+  config.vm.hostname = "alma-85"
+  # config.ssh.insert_key = false
+
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  #config.vm.network :private_network, ip: "192.168.10.10"
+
+  config.vm.provider :virtualbox do |vb|
+    vb.gui = false
+    vb.memory = 2048
+    vb.cpus = 2
+
+    # the resolver mode will interpret the DNS requests and use
+    # the host's DNS API to query the information and return it to the guest
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+
+    # Enabling DNS proxy in NAT mode.
+    # The NAT engine by default offers the same DNS servers
+    # to the guest that are configured on the host.
+    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+
+    # Enabling detecting of I/O APIC components
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]
+  end
+
+end

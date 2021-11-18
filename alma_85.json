@@ -1,0 +1,71 @@
+{
+  "builders": [
+    {
+      "boot_command": ["<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks.cfg<enter><wait>"],
+      "boot_wait": "10s",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "RedHat_64",
+      "hard_drive_interface": "sata",
+      "http_directory": "./kickstart/alma_85/",
+      "iso_checksum": "sha256:54b8881bebd924e4699ed12634187a82156fdb0fa57ec24058d04d70d2f033b3",
+      "iso_url": "http://almalinux.mirror.liteserver.nl/8.5/isos/x86_64/AlmaLinux-8.5-x86_64-dvd.iso",
+      "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
+      "ssh_timeout": "6000s",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "type": "virtualbox-iso",
+      "headless": "true",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--usb",
+          "off"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--audio",
+          "none"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ],
+      "vm_name": "alma_85"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "expect_disconnect": "true",
+      "type": "shell", 
+      "scripts": [
+        "./scripts/alma_85/dns_fix.sh",
+        "./scripts/alma_85/sshd.sh",
+        "./scripts/alma_85/yum_repo_set.sh",
+        "./scripts/alma_85/virtualbox_guest_additions.sh",
+        "./scripts/alma_85/cleanup.sh",
+        "./scripts/alma_85/zero_diskspace.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "output": "./box/alma_85_{{.Provider}}.box",
+      "type": "vagrant",
+      "vagrantfile_template": "./vagrant/alma_85/Vagrantfile"
+    }
+  ]
+}
+
