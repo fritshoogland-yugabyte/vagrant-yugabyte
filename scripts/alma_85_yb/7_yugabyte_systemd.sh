@@ -16,8 +16,6 @@ su -c "echo \"--master_addresses=127.0.0.1:7100
 --read_buffer_memory_limit=5000000
 --log_cache_size_limit_mb=16
 --global_log_cache_size_limit_mb=32
---log_cache_gc_evict_only_over_allocated=false
---enable_block_based_table_gc=true
 \" > /opt/yugabyte/conf/master.conf" yugabyte
 
 echo "create yb-master unit file"
@@ -64,12 +62,10 @@ su -c "echo \"--tserver_master_addrs=127.0.0.1:7100
 --read_buffer_memory_limit=5000000
 --log_cache_size_limit_mb=16
 --global_log_cache_size_limit_mb=32
---log_cache_gc_evict_only_over_allocated=false
 --ysql_num_shards_per_tserver=1
 --yb_num_shards_per_tserver=2
 --raft_heartbeat_interval_ms=1000
 --leader_lease_duration_ms=4000
---enable_block_based_table_cache_gc=true
 \" > /opt/yugabyte/conf/tserver.conf" yugabyte
 
 echo "create yb-tserver unit file"
