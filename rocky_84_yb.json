@@ -1,7 +1,7 @@
 {
   "builders": [
     {
-      "boot_command": "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks.cfg<enter><wait>",
+      "boot_command": ["<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks.cfg<enter><wait>"],
       "boot_wait": "10s",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "guest_os_type": "RedHat_64",
@@ -10,10 +10,11 @@
       "iso_checksum": "sha256:ffe2fae67da6702d859cfb0b321561a5d616ce87a963d8a25b018c9c3d52d9a4",
       "iso_url": "https://download.rockylinux.org/pub/rocky/8/isos/x86_64/Rocky-8.4-x86_64-dvd1.iso",
       "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
-      "ssh_password": "vagrant",
       "ssh_timeout": "6000s",
       "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
       "type": "virtualbox-iso",
+      "headless": "true",
       "vboxmanage": [
         [
           "modifyvm",
@@ -52,7 +53,6 @@
         "./scripts/rocky_84/dns_fix.sh",
         "./scripts/rocky_84/sshd.sh",
         "./scripts/rocky_84/yum_repo_set.sh",
-        "./scripts/rocky_84/vagrant_insecure_pubkey.sh",
         "./scripts/rocky_84/virtualbox_guest_additions.sh",
         "./scripts/rocky_84_yb/1_yum.sh",
         "./scripts/rocky_84_yb/2_user_group.sh",

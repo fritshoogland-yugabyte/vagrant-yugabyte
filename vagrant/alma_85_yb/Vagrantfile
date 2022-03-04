@@ -159,7 +159,7 @@ Vagrant.configure("2") do |config|
   end
 
   # all the nodes use an identical image.
-  config.vm.box = "FritsHoogland/alma8-yugabyte-2.9.1.0"
+  config.vm.box = "FritsHoogland/alma8-yugabyte-2.11.2.0"
 
   # we use the same number of nodes as the replication factor.
   # for RF=3, we need 3 yb-master processes, for which we create a VM each.
