@@ -17,3 +17,7 @@
 packer build -on-error=ask alma_85_yb.json
 # alma 8.5 
 #packer build -on-error=ask alma_85.json
+# alma 8.6 - yugabyte
+#packer build -on-error=ask alma_86_yb.json
+# alma 9.0 - yugabyte
+#packer build -on-error=ask alma_90_yb.json

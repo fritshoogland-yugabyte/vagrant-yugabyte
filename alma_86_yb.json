@@ -3,7 +3,7 @@
     "yugabyte_numeric_version": "2.13.1.0",
     "yugabyte_build": "b112",
     "node_exporter_version": "1.3.1",
-    "alma_version": "alma_85"
+    "alma_version": "alma_86"
   },
   "builders": [
     {
@@ -13,8 +13,8 @@
       "guest_os_type": "RedHat_64",
       "hard_drive_interface": "sata",
       "http_directory": "./kickstart/{{user `alma_version`}}/",
-      "iso_checksum": "sha256:54b8881bebd924e4699ed12634187a82156fdb0fa57ec24058d04d70d2f033b3",
-      "iso_url": "http://almalinux.mirror.liteserver.nl/8.5/isos/x86_64/AlmaLinux-8.5-x86_64-dvd.iso",
+      "iso_checksum": "sha256:9fac59b41ba3488955f70acde881fcbaae3a1c93053c1b60a567b242933c5493",
+      "iso_url": "http://almalinux.mirror.liteserver.nl/8.6-beta/isos/x86_64/AlmaLinux-8.6-beta-1-x86_64-dvd.iso",
       "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
       "ssh_timeout": "6000s",
       "ssh_username": "vagrant",
