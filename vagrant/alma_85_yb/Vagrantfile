@@ -159,7 +159,7 @@ Vagrant.configure("2") do |config|
   end
 
   # all the nodes use an identical image.
-  config.vm.box = "FritsHoogland/alma8-yugabyte-2.11.2.0"
+  config.vm.box = "FritsHoogland/alma8-yugabyte-{{user `yugabyte_numeric_version`}}"
 
   # we use the same number of nodes as the replication factor.
   # for RF=3, we need 3 yb-master processes, for which we create a VM each.
@@ -185,6 +185,7 @@ Vagrant.configure("2") do |config|
         #subconfig.vm.provision "master.conf:additional_flag", type: "shell", privileged: true, inline: "echo '--default_memory_limit_to_ram_ratio=1' >> /opt/yugabyte/conf/master.conf"
       end
       subconfig.vm.provision "tserver.conf:tserver_master_addrs", type: "shell", privileged: true, inline: "sed -i 's/\\(--tserver_master_addrs=\\)127.0.0.1:7100/\\1#{master_address.compact.join(',')}/' /opt/yugabyte/conf/tserver.conf"
+      subconfig.vm.provision "tserver.conf:placement_zone", type: "shell", privileged: true, inline: "sed -i 's/\\(--placement_zone=local\\)/\\1#{vm_nr}/' /opt/yugabyte/conf/tserver.conf"
       #subconfig.vm.provision "tserver.conf:additional_flag", type: "shell", privileged: true, inline: "echo '--default_memory_limit_to_ram_ratio=1' >> /opt/yugebyate/conf/tserver.conf"
       subconfig.vm.provision "etc_hosts", type: "shell", privileged: true, inline: "printf '#{etc_hosts_line.compact.join('\n')}\n' >> /etc/hosts"
       # provisioning
@@ -198,6 +199,9 @@ Vagrant.configure("2") do |config|
         subconfig.vm.provision "enable yb-tserver service", type: "shell", privileged: true, inline: "systemctl enable yb-tserver"
         subconfig.vm.provision "start yb-tserver service", type: "shell", privileged: true, inline: "systemctl start yb-tserver"
       end
+      # node_exporter
+      subconfig.vm.provision "enable node_exporter service", type: "shell", privileged: true, inline: "systemctl enable node_exporter"
+      subconfig.vm.provision "start node_exporter service", type: "shell", privileged: true, inline: "systemctl start node_exporter"
     end
   end
 end

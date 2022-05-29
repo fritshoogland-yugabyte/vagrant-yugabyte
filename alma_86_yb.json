@@ -1,7 +1,7 @@
 {
   "variables": {
-    "yugabyte_numeric_version": "2.13.1.0",
-    "yugabyte_build": "b112",
+    "yugabyte_numeric_version": "2.13.2.0",
+    "yugabyte_build": "b135",
     "node_exporter_version": "1.3.1",
     "alma_version": "alma_86"
   },
