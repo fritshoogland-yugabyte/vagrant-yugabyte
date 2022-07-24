@@ -18,10 +18,10 @@
 # alma 8.6
 #packer build -on-error=ask alma_86.json
 # alma 8.6 - postgres 11
-packer build -on-error=ask alma_86_postgres_11.json
+#packer build -on-error=ask alma_86_postgres_11.json
 # alma 8.5 - yugabyte
-#packer build -on-error=ask alma_85_yb.json
+packer build -on-error=ask alma_85_yb.json
 # alma 8.6 - yugabyte
-#packer build -on-error=ask alma_86_yb.json
+packer build -on-error=ask alma_86_yb.json
 # alma 9.0 - yugabyte
-#packer build -on-error=ask alma_90_yb.json
+packer build -on-error=ask alma_90_yb.json
