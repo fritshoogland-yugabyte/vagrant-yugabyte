@@ -1,7 +1,7 @@
 {
   "variables": {
     "alma_version": "alma_86",
-    "node_exporter_version": "1.3.1"
+    "node_exporter_version": "1.4.0"
   },
   "builders": [
     {
@@ -60,7 +60,7 @@
         "./scripts/alma/sshd.sh",
         "./scripts/node_exporter/1_user_group.sh",
         "./scripts/node_exporter/2_install.sh",
-        "./scripts/postgres11/install_postgres.sh",
+        "./scripts/postgres/install_postgres_11.sh",
         "./scripts/alma/cleanup.sh",
         "./scripts/alma/zero_diskspace.sh"
       ]
