@@ -44,7 +44,13 @@
           "modifyvm",
           "{{.Name}}",
           "--cpus",
-          "2"
+          "4"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--nat-localhostreachable1",
+          "on"
         ]
       ],
       "vm_name": "{{user `alma_version`}}_yb"
