@@ -43,7 +43,7 @@ settings.each do |name, value|
         changed_settings['number_nodes'] = changed_settings['replication_factor']
       end
       if changed_settings['number_nodes'].to_i < changed_settings['replication_factor'].to_i
-        change_settings['number_nodes'] = changed_settings['replication_factor']
+        changed_settings['number_nodes'] = changed_settings['replication_factor']
       end
     end
   end
