@@ -1,0 +1,94 @@
+{
+  "variables": {
+    "yugabyte_numeric_version": "2.17.2.0",
+    "yugabyte_build": "b216",
+    "node_exporter_version": "1.5.0",
+    "alma_version": "alma_87"
+  },
+  "builders": [
+    {
+      "boot_command": ["<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks.cfg<enter><wait>"],
+      "boot_wait": "10s",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "RedHat_64",
+      "hard_drive_interface": "sata",
+      "http_directory": "./kickstart/{{user `alma_version`}}/",
+      "iso_checksum": "sha256:5cc9cbf2bf7fd473c73441c48cfc6fd130f19243c7dfcdc9b02293d5c042c223",
+      "iso_url": "http://almalinux.mirror.liteserver.nl/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-minimal.iso",
+      "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
+      "ssh_timeout": "6000s",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "type": "virtualbox-iso",
+      "headless": "true",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--usb",
+          "off"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--audio",
+          "none"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "4"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--nat-localhostreachable1",
+          "on"
+        ]
+      ],
+      "vm_name": "{{user `alma_version`}}_yb"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "expect_disconnect": "true",
+      "type": "shell", 
+      "environment_vars": [
+        "YUGABYTE_NUMERIC_VERSION={{user `yugabyte_numeric_version`}}",
+        "YUGABYTE_BUILD={{user `yugabyte_build`}}",
+        "NODE_EXPORTER_VERSION={{user `node_exporter_version`}}"
+      ],
+      "scripts": [
+        "./scripts/alma/sshd.sh",
+        "./scripts/yugabyte/1_yum.sh",
+        "./scripts/yugabyte/2_user_group.sh",
+        "./scripts/yugabyte/3_limits.sh",
+        "./scripts/yugabyte/4_tuned.sh",
+        "./scripts/yugabyte/5_structure.sh",
+        "./scripts/yugabyte/6_install.sh",
+        "./scripts/yugabyte/7_systemd.sh",
+        "./scripts/node_exporter/1_user_group.sh",
+        "./scripts/node_exporter/2_install.sh",
+        "./scripts/alma/cleanup.sh",
+        "./scripts/alma/zero_diskspace.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "output": "./box/{{user `alma_version`}}_yb_{{.Provider}}.box",
+      "type": "vagrant",
+      "vagrantfile_template": "./vagrant/yugabyte/Vagrantfile"
+    }
+  ]
+}
+

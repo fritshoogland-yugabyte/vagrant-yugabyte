@@ -60,8 +60,6 @@ su -c "echo \"--tserver_master_addrs=127.0.0.1:7100
 --global_memstore_size_percentage=10
 --log_cache_size_limit_mb=16
 --global_log_cache_size_limit_mb=32
---ysql_num_shards_per_tserver=1
---yb_num_shards_per_tserver=2
 --raft_heartbeat_interval_ms=1000
 --leader_lease_duration_ms=4000
 \" > /opt/yugabyte/conf/tserver.conf" yugabyte
