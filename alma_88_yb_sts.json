@@ -1,9 +1,9 @@
 {
   "variables": {
-    "yugabyte_numeric_version": "2.17.3.0",
-    "yugabyte_build": "b152",
-    "node_exporter_version": "1.5.0",
-    "alma_version": "alma_87"
+    "yugabyte_numeric_version": "2.18.0.1",
+    "yugabyte_build": "b4",
+    "node_exporter_version": "1.6.0",
+    "alma_version": "alma_88"
   },
   "builders": [
     {
@@ -13,8 +13,8 @@
       "guest_os_type": "RedHat_64",
       "hard_drive_interface": "sata",
       "http_directory": "./kickstart/{{user `alma_version`}}/",
-      "iso_checksum": "sha256:5cc9cbf2bf7fd473c73441c48cfc6fd130f19243c7dfcdc9b02293d5c042c223",
-      "iso_url": "http://almalinux.mirror.liteserver.nl/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-minimal.iso",
+      "iso_checksum": "sha256:831a8c9323426b3c73e5a204c9494d90be076f755d6b0fcfb94c165f078aa947",
+      "iso_url": "http://almalinux.mirror.liteserver.nl/8.8/isos/x86_64/AlmaLinux-8.8-x86_64-minimal.iso",
       "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
       "ssh_timeout": "6000s",
       "ssh_username": "vagrant",
@@ -85,7 +85,7 @@
   "post-processors": [
     {
       "keep_input_artifact": false,
-      "output": "./box/{{user `alma_version`}}_yb_{{.Provider}}.box",
+      "output": "./box/{{user `alma_version`}}_yb_{{.Provider}}_sts_{{user `yugabyte_numeric_version`}}.box",
       "type": "vagrant",
       "vagrantfile_template": "./vagrant/yugabyte/Vagrantfile"
     }

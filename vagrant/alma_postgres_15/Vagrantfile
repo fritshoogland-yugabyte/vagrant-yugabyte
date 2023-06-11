@@ -31,6 +31,10 @@ Vagrant.configure("2") do |config|
 
     # Enabling detecting of I/O APIC components
     vb.customize ["modifyvm", :id, "--ioapic", "on"]
+
   end
+
+  config.vm.provision "enable node_exporter service", type: "shell", privileged: true, inline: "systemctl enable node_exporter"
+  config.vm.provision "start node_exporter service", type: "shell", privileged: true, inline: "systemctl start node_exporter"
 
 end

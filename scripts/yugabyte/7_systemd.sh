@@ -15,6 +15,7 @@ su -c "echo \"--master_addresses=127.0.0.1:7100
 --global_memstore_size_percentage=10
 --log_cache_size_limit_mb=16
 --global_log_cache_size_limit_mb=32
+--TEST_export_intentdb_metrics=true
 \" > /opt/yugabyte/conf/master.conf" yugabyte
 
 echo "create yb-master unit file"
@@ -62,6 +63,7 @@ su -c "echo \"--tserver_master_addrs=127.0.0.1:7100
 --global_log_cache_size_limit_mb=32
 --raft_heartbeat_interval_ms=1000
 --leader_lease_duration_ms=4000
+--TEST_export_intentdb_metrics=true
 \" > /opt/yugabyte/conf/tserver.conf" yugabyte
 
 echo "create yb-tserver unit file"
